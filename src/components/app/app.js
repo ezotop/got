@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import styled from 'styled-components';
 import Header from '../header';
+import CharacterPage from '../characterPage';
 import RandomChar from '../randomChar';
-import ItemList from '../itemList';
-import CharDetails from '../charDetails';
+// import ItemList from '../itemList';
+// import CharDetails from '../charDetails';
 import ErrorMessage from '../errorMessage';
 
 const Button = styled.button`
@@ -18,23 +19,32 @@ const Button = styled.button`
 export default class App extends Component {
 
     state = {
-        randomOn: true,
-        error: false
+        showRandomChar: true,
+        error: false,
+    }
+
+    componentDidCatch() {
+        console.log('error');
+        this.setState({
+            error: true
+        })
     }
 
     onToggleRandomChar = () => {
         this.setState({
-            randomOn: !this.state.randomOn
+            showRandomChar: !this.state.showRandomChar
         });
     }
 
     render() {
-        const {randomOn, error} = this.state;
+        const {showRandomChar, error} = this.state;
         if (error) {
             return <ErrorMessage/>
         }
-        const random = randomOn ? <RandomChar/> : null;
-        const btnText = !randomOn ? 'Show random char' : 'Hide random char';
+        const char = showRandomChar ? <RandomChar/> : null;
+        const btnText = !showRandomChar ? 'Show random char' : 'Hide random char';
+
+
 
         return (
             <> 
@@ -44,7 +54,7 @@ export default class App extends Component {
                 <Container>
                     <Row>
                         <Col lg={{size: 5, offset: 0}}>
-                            {random}
+                            {char}
                         </Col>
                     </Row>
                     <Button
@@ -52,14 +62,7 @@ export default class App extends Component {
                     onClick={this.onToggleRandomChar}>
                         {btnText}
                     </Button>
-                    <Row>
-                        <Col md='6'>
-                            <ItemList />
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails />
-                        </Col>
-                    </Row>
+                    <CharacterPage/>
                 </Container>
             </>
         );

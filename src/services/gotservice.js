@@ -15,7 +15,7 @@ export default class GotService {
 
     async getAllCharacters() {
         const res = await this.getResource('/characters?page=5&pageSize=10');
-        return await res.map(this._transformCharacter);
+        return res.map(this._transformCharacter);
     }
 
     async getCharacter(id) {
@@ -43,13 +43,27 @@ export default class GotService {
         return this._transformHouse(family);
     }
 
+    isSet(prop) {
+        if (prop) {
+            return prop;
+        } else {
+            return 'no data :(';
+        }
+    }
+
     _transformCharacter(char) {
         return {
+            url: char.url,
             name: char.name,
             gender: char.gender,
             born: char.born,
             died: char.died,
             culture: char.culture
+            // name: this.isSet(char.name),
+            // gender: this.isSet(char.gender),
+            // born: this.isSet(char.born),
+            // died: this.isSet(char.died), 
+            // culture: this.isSet(char.culture)
         };
     }
 

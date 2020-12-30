@@ -11,16 +11,21 @@ const Term = styled.span`
 `;
 
 export default class RandomChar extends Component {
-    constructor() {
-        super();
-        this.updateChar(); // Вызываем функцию сразу, как только конструктор появится на странице, чтобы заполнить рандомного персонажа
-    }
 
     gotService = new gotService();
     state = {
         char: {},
         loading: true,
         error: false
+    }
+
+    componentDidMount() {
+        this.updateChar(); // Вызываем функцию сразу, как только компонент появится на странице, чтобы заполнить рандомного персонажа
+        this.timerId = setInterval(this.updateChar, 1500);
+    }
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+
     }
 
     onCharLoaded = (char) => {
@@ -37,7 +42,7 @@ export default class RandomChar extends Component {
         });
     }
 
-    updateChar() {
+    updateChar = () => {
         const id = Math.floor(Math.random()*140 + 25); //Диапазон 25-140
         this.gotService.getCharacter(id)
             .then(this.onCharLoaded)

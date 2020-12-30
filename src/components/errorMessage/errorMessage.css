@@ -1,6 +1,10 @@
 .random-block {
-    position: relative;
     width: 100%;
+}
+.error-block {
+    margin: 0 auto;
+    width: 80%;
+    position: relative;
 }
 img {
     width: 100%;
@@ -11,7 +15,7 @@ img {
     left: 50%;
     transform: translate(-50%, -30%);
     color: #fff;
-    font-size: 22px;
+    font-size: 1.5rem;
     font-weight: 500;
     text-align: center;
 }
