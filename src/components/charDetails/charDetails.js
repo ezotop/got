@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import './charDetails.css';
+import gotService from '../../services/gotService';
 import {Term} from '../randomChar/randomChar';
+import Spinner from '../spinner';
 
 const CharDetailsBlock = styled.div`
     display: block;
@@ -11,38 +13,90 @@ const CharDetailsBlock = styled.div`
     margin-bottom: 40px;
 `;
 const CharName = styled.h4`
+    min-height: 56px;
     margin-bottom: 20px;
     text-align: center;
 `;
 
 export default class CharDetails extends Component {
 
+    gotService = new gotService();
+
+    state = {
+        char: null,
+        loading: true
+    }
+
+    componentDidMount() {
+        this.updateChar();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.charId !== prevProps.charId) {
+            this.updateChar();
+        }
+    }
+
+    updateChar() {
+        const {charId} = this.props;
+        if(!charId) {
+            return;
+        }
+
+        this.gotService.getCharacter(charId)
+            .then((char) => {
+                this.setState({
+                    char,
+                    loading: false
+                })
+            })
+        // this.foo.bar = 0;
+    }
+    
     render() {
+        if(!this.state.char) {
+            return <span className="select-error">Please select a character</span>
+        }
+        const {char, loading} = this.state;
+
+        const spinner = loading ? <Spinner/> : null;
+        const content = !loading ? <View char={char} /> : null;
+
         return (
             <CharDetailsBlock className="rounded">
-                <CharName>John Snow</CharName>
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between">
-                        <Term>Gender</Term>
-                        <span>male</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <Term>Born</Term>
-                        <span>1783</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <Term>Died</Term>
-                        <span>1820</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <Term>Culture</Term>
-                        <span>First</span>
-                    </li>
-                </ul>
+                {spinner}
+                {content}
             </CharDetailsBlock>
         );
     }
 }
+
+const View = ({char}) => {
+    const {name, gender, born, died, culture} = char;
+    return (
+        <>
+        <CharName>{name}</CharName>
+        <ul className="list-group list-group-flush">
+            <li className="list-group-item d-flex justify-content-between">
+                <Term>Gender</Term>
+                <span>{gender}</span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between">
+                <Term>Born</Term>
+                <span>{born}</span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between">
+                <Term>Died</Term>
+                <span>{died}</span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between">
+                <Term>Culture</Term>
+                <span>{culture}</span>
+            </li>
+        </ul>
+    </>
+    );
+};
 
 export {CharDetailsBlock, CharName};
 
