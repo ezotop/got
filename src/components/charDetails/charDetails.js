@@ -4,6 +4,7 @@ import './charDetails.css';
 import {Term} from '../randomChar/randomChar';
 
 const CharDetailsBlock = styled.div`
+    display: block;
     background-color: #fff;
     opacity: 0.8;
     padding: 25px 25px 15px 25px;
