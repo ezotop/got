@@ -18,11 +18,11 @@ const CharName = styled.h4`
     text-align: center;
 `;
 
-const Field = ({item, field, label}) => {
+const Field = ({char, field, label}) => {
     return (
         <li className="list-group-item d-flex justify-content-between">
             <Term>{label}</Term>
-            <span>{item[field]}</span>
+            <span>{char[field]}</span>
         </li>
     )
 };
@@ -34,37 +34,30 @@ export default class CharDetails extends Component {
     gotService = new gotService();
 
     state = {
-        item: null,
+        char: null,
         loading: true
     }
 
     componentDidMount() {
-        this.updateItem();
+        this.updateChar();
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.itemId !== prevProps.itemId) {
-            this.updateItem();
+        if (this.props.charId !== prevProps.charId) {
+            this.updateChar();
         }
     }
 
-    updateItem() {
-        const {itemId} = this.props;
-        if(!itemId) {
+    updateChar() {
+        const {charId} = this.props;
+        if(!charId) {
             return;
         }
 
-        // this.gotService.getBook(itemId)
-        //     .then((item) => {
-        //         this.setState({
-        //             item,
-        //             loading: false
-        //         })
-        //     })
-        this.props.getData(itemId)
-            .then((item) => {
+        this.gotService.getCharacter(charId)
+            .then((char) => {
                 this.setState({
-                    item,
+                    char,
                     loading: false
                 })
             })
@@ -72,13 +65,13 @@ export default class CharDetails extends Component {
     }
     
     render() {
-        if(!this.state.item) {
+        if(!this.state.char) {
             return <span className="select-error">Please select a character</span>
         }
-        const {item, loading} = this.state;
+        const {char, loading} = this.state;
 
-        const View = ({item}) => {
-            const {name} = item;
+        const View = ({char}) => {
+            const {name} = char;
             return (
                 <>
                 <CharName>{name}</CharName>
@@ -86,7 +79,7 @@ export default class CharDetails extends Component {
                     {/* {this.props.children}  Все компоненты которые переданы выше */}
                     {
                         React.Children.map(this.props.children, (child) => {
-                            return React.cloneElement(child, {item})
+                            return React.cloneElement(child, {char})
                         })
                     }
                 </ul>
@@ -95,7 +88,7 @@ export default class CharDetails extends Component {
         };
 
         const spinner = loading ? <Spinner/> : null;
-        const content = !loading ? <View item={item} /> : null;
+        const content = !loading ? <View char={char} /> : null;
 
         return (
             <CharDetailsBlock className="rounded">
