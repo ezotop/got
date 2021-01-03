@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import styled from 'styled-components';
 import Header from '../header';
-import CharacterPage from '../characterPage';
+import CharacterPage from '../pages/characterPage';
+import BookPage from '../pages/bookPage';
+import HousePage from '../pages/housePage';
 import RandomChar from '../randomChar';
-// import ItemList from '../itemList';
-// import CharDetails from '../charDetails';
 import ErrorMessage from '../errorMessage';
+import gotService from '../../services/gotService';
+
 
 const Button = styled.button`
     background-color: #fff;
@@ -17,6 +19,8 @@ const Button = styled.button`
 `;
 
 export default class App extends Component {
+
+    gotService = new gotService();
 
     state = {
         showRandomChar: true,
@@ -63,8 +67,34 @@ export default class App extends Component {
                         {btnText}
                     </Button>
                     <CharacterPage/>
+                    <BookPage/>
+                    <HousePage/>
                 </Container>
             </>
         );
     }
 }
+
+// <Row>
+//     <Col md='6'>
+//         <ItemList onItemSelected={this.onItemSelected}
+//         getData={this.gotService.getAllBooks}
+//         renderItem={(item) => item.name} />
+//         renderItem={(item) => (<><span>{item.name}</span><button>Click me</button></>)} Помимо ф-ций, можно передавать и кусок JSX разметки через стрелочную ф-цию
+//     </Col>
+//     <Col md='6'>
+//         <CharDetails charId={this.state.selectedChar} />
+//     </Col>
+// </Row>
+
+// <Row>
+//     <Col md='6'>
+//         <ItemList
+//             onItemSelected={this.onItemSelected}
+//             getData={this.gotService.getAllHouses}
+//             renderItem={(item) => item.name} />
+//     </Col>
+//     <Col md='6'>
+//         <CharDetails charId={this.state.selectedChar} />
+//     </Col>
+// </Row>
