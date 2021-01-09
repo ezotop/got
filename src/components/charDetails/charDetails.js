@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import './charDetails.css';
-import gotService from '../../services/gotService';
 import {Term} from '../randomChar/randomChar';
 import Spinner from '../spinner';
 
@@ -29,82 +28,137 @@ const Field = ({item, field, label}) => {
 
 export {Field};
 
-export default class CharDetails extends Component {
+function CharDetails(props) {
+    const {getData, itemId} = props;
 
-    gotService = new gotService();
+    const [item, setItem] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    state = {
-        item: null,
-        loading: true
-    }
+    useEffect(() => {
+            updateItem();
+    }, [itemId])
 
-    componentDidMount() {
-        this.updateItem();
-    }
+    useEffect(() => {
+        setLoading(false)
+    }, [loading])
 
-    componentDidUpdate(prevProps) {
-        if (this.props.itemId !== prevProps.itemId) {
-            this.updateItem();
-        }
-    }
-
-    updateItem() {
-        const {itemId} = this.props;
+    function updateItem() {
         if(!itemId) {
             return;
         }
-
-        // this.gotService.getBook(itemId)
-        //     .then((item) => {
-        //         this.setState({
-        //             item,
-        //             loading: false
-        //         })
-        //     })
-        this.props.getData(itemId)
+        
+        getData(itemId)
             .then((item) => {
-                this.setState({
-                    item,
-                    loading: false
-                })
+                setItem(item)
             })
-        // this.foo.bar = 0;
     }
     
-    render() {
-        if(!this.state.item) {
-            return <span className="select-error">Please select a character</span>
-        }
-        const {item, loading} = this.state;
+    if(!item) {
+        return <span className="select-error">Please select a character</span>
+    }
+    const name = item.name;
 
-        const View = ({item}) => {
-            const {name} = item;
-            return (
-                <>
-                <CharName>{name}</CharName>
-                <ul className="list-group list-group-flush">
-                    {/* {this.props.children}  Все компоненты которые переданы выше */}
-                    {
-                        React.Children.map(this.props.children, (child) => {
-                            return React.cloneElement(child, {item})
-                        })
-                    }
-                </ul>
-            </>
-            );
-        };
-
-        const spinner = loading ? <Spinner/> : null;
-        const content = !loading ? <View item={item} /> : null;
-
+    const View = (item) => {
         return (
-            <CharDetailsBlock className="rounded">
-                {spinner}
-                {content}
-            </CharDetailsBlock>
+            <>
+            <CharName>{name}</CharName>
+            <ul className="list-group list-group-flush">
+                {
+                    React.Children.map(props.children, (child) => { //Перебор всех пропсов у детей этого компонента, см. в app.js
+                        return React.cloneElement(child, item)
+                    })
+                }
+                
+            </ul>
+        </>
         );
     }
+
+    const spinner = loading ? <Spinner/> : null;
+    const content = !loading ? <View item={item} /> : null;
+
+    return (
+        <CharDetailsBlock className="rounded">
+            {spinner}
+            {content}
+        </CharDetailsBlock>
+    );
 }
+
+export default CharDetails;
+
+// export default class CharDetails extends Component {
+
+//     gotService = new gotService();
+
+//     state = {
+//         item: null,
+//         loading: true
+//     }
+
+//     componentDidMount() {
+//         this.updateItem();
+//     }
+
+//     componentDidUpdate(prevProps) {
+//         if (this.props.itemId !== prevProps.itemId) {
+//             this.updateItem();
+//         }
+//     }
+
+//     updateItem() {
+//         const {itemId} = this.props;
+//         if(!itemId) {
+//             return;
+//         }
+        
+//         this.props.getData(itemId)
+//             .then((item) => {
+//                 this.setState({
+//                     item,
+//                     loading: false
+//                 })
+//             })
+//         // this.foo.bar = 0;
+//     }
+    
+//     render() {
+//         if(!this.state.item) {
+//             return <span className="select-error">Please select a character</span>
+//         }
+//         const {item, loading} = this.state;
+
+//         const View = ({item}) => {
+//             const {name} = item;
+//             return (
+//                 <>
+//                 <CharName>{name}</CharName>
+//                 <ul className="list-group list-group-flush">
+//                     {/* {this.props.children}  Все компоненты которые переданы выше в Field */}
+//                     {
+//                         React.Children.map(this.props.children, (child) => {
+//                             return React.cloneElement(child, {item})
+//                         })
+//                     }
+//                 </ul>
+//             </>
+//             );
+//         };
+
+//         const spinner = loading ? <Spinner/> : null;
+//         const content = !loading ? <View item={item} /> : null;
+
+//         return (
+//             <CharDetailsBlock className="rounded">
+//                 {spinner}
+//                 {content}
+//             </CharDetailsBlock>
+//         );
+//     }
+// }
+
+
+
 
 // const View = ({char}, props) => {
 //     const {name, gender, born, died, culture} = char;
@@ -119,4 +173,3 @@ export default class CharDetails extends Component {
 // };
 
 export {CharDetailsBlock, CharName};
-

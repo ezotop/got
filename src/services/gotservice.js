@@ -52,7 +52,7 @@ export default class GotService {
     }
 
     _extractId = (item) => {
-        const regid = /\/[0-9]+$/;
+        const regid = /[0-9]*$/;
         return item.url.match(regid);
     }
 

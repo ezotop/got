@@ -8,6 +8,7 @@ gulpfile.js
 package-lock.json
 yarn.lock
 README.md
+*_old.js
 
 # testing
 /coverage
