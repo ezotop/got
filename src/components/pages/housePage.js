@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import gotService from '../../../services/gotService';
-import ItemList from '../../itemList';
-import CharDetails, {Field} from '../../charDetails';
-import ErrorMessage from '../../errorMessage';
-import RowBlock from '../../rowBlock';
+import gotService from '../../services/gotService';
+import ItemList from '../itemList';
+import CharDetails, {Field} from '../charDetails';
+import ErrorMessage from '../errorMessage';
+import RowBlock from '../rowBlock';
 
-export default class HousePage extends Component {
+class HousePage extends Component {
 
     gotService = new gotService();
-
     state = {
         selectedHouse: 1,
         error: false
@@ -25,7 +24,14 @@ export default class HousePage extends Component {
             selectedHouse: id
         })
     }
-
+    componentDidUpdate(prevProps) {
+        if (this.props.selectedId !== prevProps.selectedId) {
+            this.setState({
+                selectedHouse: this.props.selectedId
+            })
+        }
+    }
+        
     render() {
         if (this.state.error) {
             return <ErrorMessage/>
@@ -56,3 +62,5 @@ export default class HousePage extends Component {
     }
 
 };
+
+export default HousePage;

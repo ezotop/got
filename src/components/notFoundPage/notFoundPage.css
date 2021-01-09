@@ -1,0 +1,33 @@
+.not-found {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.not-found-err {
+    display: block;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.not-found-text {
+    display: block;
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.go-home {
+    /* display: block;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 20px;
+    width: 200px;
+    height: 50px; */
+    color: #fff;
+    background-color: black;
+}

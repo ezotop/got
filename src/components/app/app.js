@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import styled from 'styled-components';
 import Header from '../header';
-import CharacterPage from '../pages/characterPage';
-import BookPage from '../pages/bookPage';
-import HousePage from '../pages/housePage';
+import {CharacterPage, BookPage, HousePage, BookItem, HomePage} from '../pages';
 import RandomChar from '../randomChar';
 import ErrorMessage from '../errorMessage';
 import gotService from '../../services/gotService';
-
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import NotFoundPage from '../notFoundPage';
 
 const Button = styled.button`
     background-color: #fff;
@@ -17,6 +16,7 @@ const Button = styled.button`
     width: 200px;
     margin-bottom: 20px;
 `;
+export {Button};
 
 export default class App extends Component {
 
@@ -45,32 +45,41 @@ export default class App extends Component {
         if (error) {
             return <ErrorMessage/>
         }
-        const char = showRandomChar ? <RandomChar/> : null;
+        const char = showRandomChar ? <RandomChar getData={this.gotService.getCharacter}/> : null;
         const btnText = !showRandomChar ? 'Show random char' : 'Hide random char';
 
-
-
         return (
-            <> 
-                <Container>
-                    <Header />
-                </Container>
-                <Container>
-                    <Row>
-                        <Col lg={{size: 5, offset: 0}}>
-                            {char}
-                        </Col>
-                    </Row>
-                    <Button
-                    className="rounded"
-                    onClick={this.onToggleRandomChar}>
-                        {btnText}
-                    </Button>
-                    <CharacterPage/>
-                    <BookPage/>
-                    <HousePage/>
-                </Container>
-            </>
+             <Router>
+                <div className="app">
+                    <Container>
+                        <Header />
+                    </Container>
+                    <Container>
+                        <Row>
+                            <Col lg={{size: 5, offset: 0}}>
+                                {char}
+                            </Col>
+                        </Row>
+                        <Button
+                        className="rounded"
+                        onClick={this.onToggleRandomChar}>
+                            {btnText}
+                        </Button>
+                        <Switch>
+                            <Route path="/" exact component={HomePage}/>
+                            <Route path="/characters" component={CharacterPage}/>
+                            <Route path="/houses" component={HousePage}/>
+                            <Route path="/books" exact component={BookPage}/>
+                            <Route path="/books/:id" render={ 
+                                ({match}) => {
+                                    const {id} = match.params;
+                                    return <BookItem bookId={id}/>}
+                            }/>
+                            <Route component={NotFoundPage}/>
+                        </Switch>
+                    </Container>
+                </div>
+            </Router>
         );
     }
 }
@@ -98,3 +107,37 @@ export default class App extends Component {
 //         <CharDetails charId={this.state.selectedChar} />
 //     </Col>
 // </Row>
+
+
+// return (
+//     <Router>
+//         <div className="app"> 
+//             <Container>
+//                 <Header />
+//             </Container>
+//             <Container>
+//                 <Row>
+//                     <Col lg={{size: 5, offset: 0}}>
+//                         {char}
+//                     </Col>
+//                 </Row>
+//                 <Button
+//                 className="rounded"
+//                 onClick={this.onToggleRandomChar}>
+//                     {btnText}
+//                 </Button>
+//                 <Route path="/" exact component={() => <h1>Welcome To Game Of Thrones DB</h1>}/>
+//                 <Route path="/characters" component={CharacterPage}/>
+//                 <Route path="/houses" component={HousePage}/>
+//                 <Route path="/books" exact component={BookPage}/>
+//                 <Route path="/books/:id" render={ 
+//                     ({match}) => {
+//                         const {id} = match.params;
+//                         return <BookItem bookId={id}/>}
+//                 }/>
+//             </Container>
+//         </div>
+//     </Router>
+// );
+
+

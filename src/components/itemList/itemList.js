@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import Spinner from '../spinner';
 
 const ListGroup = styled.ul`
+    background-color: #fff;
     opacity: 0.8;
 `;
 
@@ -10,33 +11,27 @@ const ListGroupItem = styled.li`
     cursor: pointer;
 `;
 
-export default class ItemList extends Component {
+function ItemList({getData, renderItem, onItemSelected}) {
 
-    state = {
-        itemList: null,
-    }
+    const [itemList, updateList] = useState([]);
 
-    componentDidMount() {
-        const {getData} = this.props;
-
+    useEffect(() => {
         getData()
-            .then((itemList) => {
-                this.setState({
-                    itemList
-                })
+            .then((data) => {
+                updateList(data)
             })
-    }
+    }, []);
 
-    renderItems(arr) {
+    const renderItems = (arr) => {
         return arr.map((item) => {
             const {id} = item;
-            const label = this.props.renderItem(item);
+            const label = renderItem(item);
             
             return (
                 <ListGroupItem
-                key={id}
+                key={id[0]}
                 className="list-group-item"
-                onClick={ () => this.props.onItemSelected(id) }>
+                onClick={ () => onItemSelected(id[0]) }>
                     {label}
                 </ListGroupItem>
             );
@@ -44,19 +39,18 @@ export default class ItemList extends Component {
         })
     }
 
-    render() {
-        const {itemList} = this.state;
-
-        if(!itemList) { //Если charList пустой то будет спиннер
-            return <Spinner/>
-        }
-
-        const items = this.renderItems(itemList);
-
-        return (
-            <ListGroup>
-                {items}
-            </ListGroup>
-        );
+    if(!itemList) { //Если пустой то будет спиннер
+        return <Spinner/>
     }
+
+    const items = renderItems(itemList);
+
+    return (
+        <ListGroup>
+            {items}
+        </ListGroup>
+    );
+    
 }
+
+export default ItemList;
