@@ -67,6 +67,18 @@ export default class GotService {
         };
     }
 
+    // _getOverlordName = async (url) => {
+    //     if (url) {
+    //         const reg = /\/houses\/[0-9]*$/;
+    //         const overlord = await this.getResource(url.match(reg));
+    //         const name = overlord.name;
+    //         console.log(name);
+    //         return name;
+    //     } else {
+    //         return 'no data:(';
+    //     }
+    // }
+
     _transformHouse = (house) => {
         return {
             id: this._extractId(house),
@@ -74,7 +86,7 @@ export default class GotService {
             region: this.isSet(house.region),
             words: this.isSet(house.words),
             titles: this.isSet(house.titles),
-            overlord: this.isSet(house.overlord),
+            overlord: house.overlord,
             ancestralWeapons: this.isSet(house.ancestralWeapons)
         };
     }
