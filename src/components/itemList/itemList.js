@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {Component} from 'react';
 import styled from 'styled-components';
 import Spinner from '../spinner';
 
@@ -11,46 +11,51 @@ const ListGroupItem = styled.li`
     cursor: pointer;
 `;
 
-function ItemList({getData, renderItem, onItemSelected}) {
+export default class ItemList extends Component {
 
-    const [itemList, updateList] = useState([]);
+    state = {
+        itemList: null,
+    }
 
-    useEffect(() => {
+    componentDidMount() {
+        const {getData} = this.props;
         getData()
-            .then((data) => {
-                updateList(data)
-            })
-    }, []);
-
-    const renderItems = (arr) => {
-        return arr.map((item) => {
-            const {id} = item;
-            const label = renderItem(item);
-            
-            return (
-                <ListGroupItem
-                key={id[0]}
-                className="list-group-item"
-                onClick={ () => onItemSelected(id[0]) }>
-                    {label}
-                </ListGroupItem>
-            );
-            
+            .then((itemList) => {
+                this.setState({
+                    itemList
+                })
         })
     }
 
-    if(!itemList) { //Если пустой то будет спиннер
-        return <Spinner/>
+    renderItems(arr) {
+        return arr.map((item) => {
+            const {id} = item;
+            const label = this.props.renderItem(item);
+
+            return (
+                <ListGroupItem
+                key={id}
+                className="list-group-item"
+                onClick={ () => this.props.onItemSelected(id) }>
+                    {label}
+                </ListGroupItem>
+            );
+
+        })
     }
 
-    const items = renderItems(itemList);
+    render() {
+        const {itemList} = this.state;
 
-    return (
-        <ListGroup>
-            {items}
-        </ListGroup>
-    );
-    
-}
+        if(!itemList) { //Если charList пустой то будет спиннер
+            return <Spinner/>
+        }
+        const items = this.renderItems(itemList);
 
-export default ItemList;
+        return (
+            <ListGroup>
+                {items}
+            </ListGroup>
+        );
+    }
+} 

@@ -52,7 +52,7 @@ class HousePage extends Component {
                 <Field field='words' label='Words'/>
                 <Field field='titles' label='Titles'/>
                 <Field field='overlord' label='Overlord'/>
-                <Field field='ancestralWeapons' label='Ancestral weapons'/>
+                {/* <Field field='ancestralWeapons' label='Ancestral weapons'/> */}
             </CharDetails>
         );
 

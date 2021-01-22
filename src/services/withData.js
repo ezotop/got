@@ -3,6 +3,7 @@ import Spinner from '../components/spinner';
 import ErrorMessage from '../components/errorMessage';
 import ItemList from '../components/itemList';
 
+//Ex of HOC
 const withData = (View, getData) => {
     return class extends Component {
         state = {
